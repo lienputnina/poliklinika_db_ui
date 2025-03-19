@@ -1,0 +1,46 @@
+# Visual Studio specific files
+.vs/
+
+# Build and output directories
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Backup and temporary files
+*.bak
+*.log
+*.tlog
+*.cache
+*.ilk
+*.pdb
+*.sdf
+*.sln.cache
+*.ncb
+*.opendb
+*.VC.db
+
+# NuGet packages
+packages/
+*.nupkg
+
+# Local database files
+*.mdf
+*.ldf
+
+# Rider / JetBrains
+.idea/
+
+# Windows specific
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Miscellaneous
+.DS_Store
+*.tmp
+~$*
