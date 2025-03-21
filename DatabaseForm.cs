@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -98,15 +99,14 @@ namespace Poliklinika_DB_UI {
       SqlConnection databaseConnection = new SqlConnection("Server=localhost\\SQLEXPRESS;Database=Poliklinika;Trusted_Connection=True;");
       SqlCommand queryTables = new SqlCommand(queryTablesCommand, databaseConnection);
 
-
       try {
         // Connecting to the database and reading the tables
         databaseConnection.Open();
-        SqlDataReader reader = queryTables.ExecuteReader();
+        SqlDataReader tableReader = queryTables.ExecuteReader();
 
         // While there are rows to read, we add them to the combobox
-        while (reader.Read()) {
-          tableSelection.Items.Add(reader.GetString(0));
+        while (tableReader.Read()) {
+          tableSelection.Items.Add(tableReader.GetString(0));
         }
 
         // Checking, if the dropdown is empty
@@ -125,16 +125,73 @@ namespace Poliklinika_DB_UI {
       }
     }
 
-    //Next Steps:
     //Create a method to load and display data from the selected table into the DataGridView.
     //Attach this method to the ComboBox’s SelectedIndexChanged event so that when the user picks a different table, the DataGridView updates accordingly.
+    private void displayTableData (object sender, EventArgs e) {
+
+      SqlConnection databaseConnection = new SqlConnection("Server=localhost\\SQLEXPRESS;Database=Poliklinika;Trusted_Connection=True;");
+      SqlCommand queryTables = new SqlCommand(queryTablesCommand, databaseConnection);
+      SqlDataAdapter tableDataAdapter = new SqlDataAdapter();
+      DataGridView tableDataGridView = new DataGridView();
+      BindingSource dataBindingSource = new BindingSource();
+
+
+      try {
+        databaseConnection.Open();
+
+        List<string> tableNames = new List<string>();
+        SqlDataReader tableReader = queryTables.ExecuteReader();
+
+        while (tableReader.Read()) {
+          tableNames.Add(tableReader.GetString(0));
+        }
+
+        if (tableNames.Count == 0) {
+          MessageBox.Show("No tables were found", "Could not read from the database", MessageBoxButtons.OK);
+        }
+
+        tableReader.Close();
+
+
+        int currentTableIndex = tableSelection.SelectedIndex;
+
+        // Add a comment about this
+        if (currentTableIndex < 0 || currentTableIndex >= tableNames.Count) {
+          return;
+        }
+
+        string selectedTable = tableNames [currentTableIndex];
+
+        // Building the SQL query for selecting the table
+        string selectQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'\r\n";
+
+
+        // Executing the select query
+        tableDataAdapter.SelectCommand = new SqlCommand(
+            selectQuery, databaseConnection);
+
+        DataSet tableDataSet = new DataSet(selectedTable);
+
+        // Filling the data set with the selected table
+        tableDataAdapter.Fill(tableDataSet);
+
+        dataBindingSource.DataSource = tableDataSet;
+        tableDataGridView.DataSource = dataBindingSource;
+
+      } catch (System.Exception ex) {
+        MessageBox.Show(ex.ToString(), "Could not display the table", MessageBoxButtons.OK); // immeadietly went to this
+      } finally {
+        if (databaseConnection.State == ConnectionState.Open) {
+          databaseConnection.Close();
+        }
+      }
+    }
     private void tableSelect_SelectedIndexChanged (object sender, EventArgs e) {
       // selecting tables - user interaction
     }
     private void databaseDataGrid_CellContentClick (object sender, DataGridViewCellEventArgs e) {
       // table 1
     }
-
 
     private void databaseNavigator_RefreshItems (object sender, EventArgs e) {
       // table 1

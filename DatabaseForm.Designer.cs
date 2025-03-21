@@ -26,7 +26,7 @@
       this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DatabaseForm));
       this.button1 = new System.Windows.Forms.Button();
-      this.dataGridView1 = new System.Windows.Forms.DataGridView();
+      this.tableDataGridView = new System.Windows.Forms.DataGridView();
       this.bindingNavigator1 = new System.Windows.Forms.BindingNavigator(this.components);
       this.bindingNavigatorAddNewItem = new System.Windows.Forms.ToolStripButton();
       this.bindingNavigatorCountItem = new System.Windows.Forms.ToolStripLabel();
@@ -39,12 +39,12 @@
       this.bindingNavigatorMoveNextItem = new System.Windows.Forms.ToolStripButton();
       this.bindingNavigatorMoveLastItem = new System.Windows.Forms.ToolStripButton();
       this.bindingNavigatorSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-      this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
+      this.dataBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.tableSelection = new System.Windows.Forms.ComboBox();
-      ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize) (this.tableDataGridView)).BeginInit();
       ((System.ComponentModel.ISupportInitialize) (this.bindingNavigator1)).BeginInit();
       this.bindingNavigator1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize) (this.bindingSource1)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize) (this.dataBindingSource)).BeginInit();
       this.SuspendLayout();
       // 
       // button1
@@ -59,12 +59,12 @@
       // 
       // dataGridView1
       // 
-      this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-      this.dataGridView1.Location = new System.Drawing.Point(12, 119);
-      this.dataGridView1.Name = "dataGridView1";
-      this.dataGridView1.Size = new System.Drawing.Size(776, 214);
-      this.dataGridView1.TabIndex = 1;
-      this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.databaseDataGrid_CellContentClick);
+      this.tableDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+      this.tableDataGridView.Location = new System.Drawing.Point(12, 119);
+      this.tableDataGridView.Name = "dataGridView1";
+      this.tableDataGridView.Size = new System.Drawing.Size(776, 214);
+      this.tableDataGridView.TabIndex = 1;
+      this.tableDataGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.databaseDataGrid_CellContentClick);
       // 
       // bindingNavigator1
       // 
@@ -197,16 +197,16 @@
       this.ClientSize = new System.Drawing.Size(862, 427);
       this.Controls.Add(this.tableSelection);
       this.Controls.Add(this.bindingNavigator1);
-      this.Controls.Add(this.dataGridView1);
+      this.Controls.Add(this.tableDataGridView);
       this.Controls.Add(this.button1);
       this.Name = "DatabaseForm";
       this.Text = "Form1";
       this.Load += new System.EventHandler(this.DatabaseForm_Load);
-      ((System.ComponentModel.ISupportInitialize) (this.dataGridView1)).EndInit();
+      ((System.ComponentModel.ISupportInitialize) (this.tableDataGridView)).EndInit();
       ((System.ComponentModel.ISupportInitialize) (this.bindingNavigator1)).EndInit();
       this.bindingNavigator1.ResumeLayout(false);
       this.bindingNavigator1.PerformLayout();
-      ((System.ComponentModel.ISupportInitialize) (this.bindingSource1)).EndInit();
+      ((System.ComponentModel.ISupportInitialize) (this.dataBindingSource)).EndInit();
       this.ResumeLayout(false);
       this.PerformLayout();
 
@@ -215,7 +215,7 @@
     #endregion
 
     private System.Windows.Forms.Button button1;
-    private System.Windows.Forms.DataGridView dataGridView1;
+    private System.Windows.Forms.DataGridView tableDataGridView;
     private System.Windows.Forms.BindingNavigator bindingNavigator1;
     private System.Windows.Forms.ToolStripButton bindingNavigatorAddNewItem;
     private System.Windows.Forms.ToolStripLabel bindingNavigatorCountItem;
@@ -228,7 +228,7 @@
     private System.Windows.Forms.ToolStripButton bindingNavigatorMoveNextItem;
     private System.Windows.Forms.ToolStripButton bindingNavigatorMoveLastItem;
     private System.Windows.Forms.ToolStripSeparator bindingNavigatorSeparator2;
-    private System.Windows.Forms.BindingSource bindingSource1;
+    private System.Windows.Forms.BindingSource dataBindingSource;
     private System.Windows.Forms.ComboBox tableSelection;
   }
 }
