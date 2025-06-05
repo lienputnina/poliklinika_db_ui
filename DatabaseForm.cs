@@ -10,6 +10,7 @@ using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Poliklinika_DB_UI.Properties;
 using static System.Net.Mime.MediaTypeNames;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -17,33 +18,25 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace Poliklinika_DB_UI {
   public partial class DatabaseForm : Form {
 
-    // SQL command for creating a new database
-    // Using COLLATE Latin1_General_100_CI_AS_SC_UTF8 to get uft8 support for unicode characters
-    // verbatim string for readability
-    string createTablesCommand =
-      @"      
-      ALTER DATABASE Poliklinika COLLATE Latin1_General_100_CI_AS_SC_UTF8;
-      USE Poliklinika;
-
-      CREATE TABLE Pacienti (PacientaKartinasNumurs int NOT NULL, Uzvards nvarchar(30), Vards nvarchar(20), Iela nvarchar (50), Maja int, Dzivoklis int, Pilseta nvarchar (20), Rajons nvarchar (20), PastaIndekss nvarchar (10), TelefonaNumurs nvarchar (20), PRIMARY KEY (PacientaKartinasNumurs)); 
-      CREATE TABLE Konsultacijas (KonsultacijasNumurs nvarchar(15) NOT NULL, Nosaukums nvarchar (100), Cena float, PRIMARY KEY (KonsultacijasNumurs)); 
-      CREATE TABLE Arsti (ArstaPersonasKods nvarchar(15) NOT NULL, Uzvards nvarchar (30), Vards nvarchar (20), TelefonaNumurs nvarchar (20), Epasts nvarchar (50), PRIMARY KEY (ArstaPersonasKods)); 
-      CREATE TABLE Kabineti (KabinetaNumurs int NOT NULL, Nosaukums nvarchar (100), TelefonaNumurs nvarchar (20), PRIMARY KEY (KabinetaNumurs));
-      CREATE TABLE Registrs (Datums date, KonsultacijasSakums time, KonsultacijasBeigas time, KabinetaNumurs int, KonsultacijasNumurs nvarchar(15), ArstaPersonasKods nvarchar (15), PacientaKartinasNumurs int, PRIMARY KEY (Datums, KonsultacijasSakums, KabinetaNumurs, KonsultacijasNumurs, ArstaPersonasKods, PacientaKartinasNumurs), CONSTRAINT FK_KabinetaNumurs FOREIGN KEY (KabinetaNumurs) REFERENCES Kabineti (KabinetaNumurs), CONSTRAINT FK_KonsultacijasNumurs FOREIGN KEY (KonsultacijasNumurs) REFERENCES Konsultacijas (KonsultacijasNumurs), CONSTRAINT FK_ArstaPersonasKods FOREIGN KEY (ArstaPersonasKods) REFERENCES Arsti (ArstaPersonasKods), CONSTRAINT FK_PacientaKartinasNumurs FOREIGN KEY (PacientaKartinasNumurs) REFERENCES Pacienti (PacientaKartinasNumurs));";
-
-    // SQL command for inserting data (for the second call)
-    string insertDataCommand =
-      @"INSERT INTO Pacienti VALUES ('2025-0001', 'Ozola', 'Madara', 'Rīgas', '32', '5', 'Liepāja', 'Liepājas', 'LV – 3401', '+37126612345'), ('2025-0002', 'Bērziņš', 'Linards', 'Kokles', '15', '65', 'Rīga', 'Rīgas', 'LV – 1029', '+37124494859'), ('2025-0003', 'Kļaviņa', 'Lauma', 'Tērbatas', '14', '10', 'Valmiera', 'Valmieras', 'LV – 4201', '+37125516868'), ('2025-0004', 'Kārkliņš', 'Elvijs', 'Ainavu', '4', '2', 'Sigulda', 'Siguldas', 'LV – 2150', '+37129912323'), ('2025-0005', 'Liepa', 'Ilga', 'Ābeļu', '5', '1', 'Jelgava', 'Jelgavas', 'LV-3008', '+37129912366');
-     INSERT INTO Konsultacijas VALUES ('2025-0001-01', 'Ginekologa konsultācija', '80'), ('2025-0002-02', 'Urologa konsultācija', '50'), ('2025-0003-03', 'Operējoša Otolaringologa (LOR) konsultācija', '65'), ('2025-0004-04', 'Neiroķirurga konsultācija bērnam', '4.72'), ('2025-0005-05', 'Rentgens (RTG, radioloģisks izmeklējums, nosūtījums obligāts)', '50');
-     INSERT INTO Arsti VALUES ('180593-26655', 'Dzērve', 'Jānis', '+3712211668', 'janis.dzerve@poliklinika.lv'), ('120286-12233', 'Žagata', 'Līga', '+3713344755', 'liga.zagata@poliklinika.lv'), ('200675-36600', 'Lakstīgala', 'Daina', '+3714455883', 'daina.lakstigala@poliklinika.lv'), ('151168-41166', 'Krauklis', 'Kristaps', '+3715566991', 'kristaps.krauklis@poliklinika.lv'), ('261066-53311', 'Dzenis', 'Mārtiņš', '+3716677123', 'martins.dzenis@poliklinika.lv');
-     INSERT INTO Kabineti VALUES ('105', 'Ginekologs', '+3716755123'),  ('202', 'Urologs', '+3716731122'), ('304', 'Otolaringologs', '+3716753005'), ('403', 'Neiroķirurgs', '+3716741978'), ('501', 'Radiologs', '+3716791357');
-     INSERT INTO Registrs  VALUES ('2025.03.21', '09:30:00', '09:45:00', '105', '2025-0001-01', '180593-26655', '2025-0001'), ('2025.03.30', '11:45:00', '12:00:00', '202', '2025-0002-02', '120286-12233', '2025-0002'), ('2025.04.14', '12:00:00', '12:15:00', '304', '2025-0003-03', '200675-36600', '2025-0003'), ('2025.04.21', '08:20:00', '08:40:00', '403', '2025-0004-04', '151168-41166', '2025-0004'), ('2025.06.06', '17:10:00', '17:20:00', '501', '2025-0005-05', '261066-53311', '2025-0005');";
-
+     /*
+      * SQL commands for creating a new database and inserting data.
+      * The commands are read from an external SQL file to keep the code clean.
+     */
+    string createTablesCommand = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CreateTables.sql"));
+    string insertDataCommand = File.ReadAllText(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "InsertData.sql"));
     string queryTablesCommand = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'\r\n";
 
-    public DatabaseForm () {
+    // Creating the connection to the database
+    string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;Initial Catalog=Poliklinika;Integrated Security=True;";
+
+     public DatabaseForm () {
       InitializeComponent();
-    }
+
+      // Setting the DataGridView to automatically resize all its columns
+      tableDataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+
+
+     }
     private void DatabaseForm_Load (object sender, EventArgs e) {
       fillCombobox();
     }
@@ -51,11 +44,12 @@ namespace Poliklinika_DB_UI {
     private void createDB_Click (object sender, EventArgs e) {
 
       // Creating the connection to the database
-      SqlConnection databaseConnection = new SqlConnection("Server=localhost\\SQLEXPRESS;Database=Poliklinika;Trusted_Connection=True;");
+      SqlConnection databaseConnection = new SqlConnection(connectionString);
 
 
       // Creating a new SQL command for creating the database
       SqlCommand createDB = new SqlCommand(createTablesCommand, databaseConnection);
+
       // Creating a new SQL command for inserting data (for the second call)
       SqlCommand insertData = new SqlCommand(insertDataCommand, databaseConnection);
 
@@ -69,24 +63,33 @@ namespace Poliklinika_DB_UI {
 
         databaseConnection.Open();
 
+       try {
 
         createDB.ExecuteNonQuery();
-        // Making the second call for inserting data
+        MessageBox.Show("Tables created successfully!");
+
+        } catch (Exception ex1) {
+            MessageBox.Show("Could not create the tables: " + ex1.Message);
+        }
+
+       try {
+
         insertData.ExecuteNonQuery();
+        MessageBox.Show("Data inserted successfully!");
 
-
-        //MessageBox.Show("DataBase is Created Successfully", "MyProgram", MessageBoxButtons.OK);
-        MessageBox.Show("DataBase is created Successfully", "Poliklinika db", MessageBoxButtons.OK);
-
+        } catch (Exception ex1) {
+            MessageBox.Show("Could not insert the data: " + ex1.Message);
+        }
+                
 
       } catch (System.Exception ex) {
-        MessageBox.Show(ex.ToString(), "Could not create the database", MessageBoxButtons.OK);
+        MessageBox.Show(ex.ToString(), "Could not connect to the database", MessageBoxButtons.OK);
+       
+       } finally {
 
-      } finally {
-        /*
-        1. Opening the database connection
-        2. Closing the database connection, if it is open
-         */
+        MessageBox.Show("DataBase is created Successfully", "Poliklinika db", MessageBoxButtons.OK);
+
+       //Closing the database connection, if it is open
         if (databaseConnection.State == ConnectionState.Open) {
           databaseConnection.Close();
 
@@ -96,7 +99,7 @@ namespace Poliklinika_DB_UI {
 
     private void fillCombobox () {
 
-      SqlConnection databaseConnection = new SqlConnection("Server=localhost\\SQLEXPRESS;Database=Poliklinika;Trusted_Connection=True;");
+      SqlConnection databaseConnection = new SqlConnection(connectionString);
       SqlCommand queryTables = new SqlCommand(queryTablesCommand, databaseConnection);
 
       try {
@@ -106,18 +109,18 @@ namespace Poliklinika_DB_UI {
 
         // While there are rows to read, we add them to the combobox
         while (tableReader.Read()) {
-          tableSelection.Items.Add(tableReader.GetString(0));
+          tableSelector.Items.Add(tableReader.GetString(0));
         }
 
         // Checking, if the dropdown is empty
-        if (tableSelection.Items.Count == 0) {
-          MessageBox.Show(tableSelection.ToString(), "The dropdown is empty", MessageBoxButtons.OK);
+        if (tableSelector.Items.Count == 0) {
+          MessageBox.Show(tableSelector.ToString(), "The dropdown is empty", MessageBoxButtons.OK);
         }
 
-        tableSelection.SelectedIndex = 0;
+        tableSelector.SelectedIndex = 0; // no data, apparently?
 
       } catch (System.Exception ex) {
-        MessageBox.Show(ex.ToString(), "Could not read from the database", MessageBoxButtons.OK); // immeadietly went to this
+        MessageBox.Show(ex.ToString(), "Could not read from the database", MessageBoxButtons.OK); 
       } finally {
         if (databaseConnection.State == ConnectionState.Open) {
           databaseConnection.Close();
@@ -125,60 +128,40 @@ namespace Poliklinika_DB_UI {
       }
     }
 
-    //Create a method to load and display data from the selected table into the DataGridView.
     //Attach this method to the ComboBox’s SelectedIndexChanged event so that when the user picks a different table, the DataGridView updates accordingly.
-    private void displayTableData (object sender, EventArgs e) {
+    private void displayTableData () {
 
-      SqlConnection databaseConnection = new SqlConnection("Server=localhost\\SQLEXPRESS;Database=Poliklinika;Trusted_Connection=True;");
+      SqlConnection databaseConnection = new SqlConnection(connectionString);
       SqlCommand queryTables = new SqlCommand(queryTablesCommand, databaseConnection);
       SqlDataAdapter tableDataAdapter = new SqlDataAdapter();
-      DataGridView tableDataGridView = new DataGridView();
-      BindingSource dataBindingSource = new BindingSource();
-
 
       try {
-        databaseConnection.Open();
+       databaseConnection.Open();
 
-        List<string> tableNames = new List<string>();
-        SqlDataReader tableReader = queryTables.ExecuteReader();
-
-        while (tableReader.Read()) {
-          tableNames.Add(tableReader.GetString(0));
+       if (tableSelector.SelectedItem == null) {
+            MessageBox.Show("Please select a table first.");
+             return;
         }
 
-        if (tableNames.Count == 0) {
-          MessageBox.Show("No tables were found", "Could not read from the database", MessageBoxButtons.OK);
-        }
+       string selectedTable = tableSelector.SelectedItem.ToString();
 
-        tableReader.Close();
+        // Building the SQL query for selecting the table with an interpolated string to dynamically select the selected table values.
+        string selectQuery = $"SELECT * FROM [{selectedTable}]";
 
-
-        int currentTableIndex = tableSelection.SelectedIndex;
-
-        // Add a comment about this
-        if (currentTableIndex < 0 || currentTableIndex >= tableNames.Count) {
-          return;
-        }
-
-        string selectedTable = tableNames [currentTableIndex];
-
-        // Building the SQL query for selecting the table
-        string selectQuery = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'\r\n";
-
-
-        // Executing the select query
-        tableDataAdapter.SelectCommand = new SqlCommand(
+       // Executing the select query
+       tableDataAdapter.SelectCommand = new SqlCommand(
             selectQuery, databaseConnection);
 
-        DataSet tableDataSet = new DataSet(selectedTable);
+       DataSet tableDataSet = new DataSet(selectedTable);
 
         // Filling the data set with the selected table
         tableDataAdapter.Fill(tableDataSet);
 
-        dataBindingSource.DataSource = tableDataSet;
-        tableDataGridView.DataSource = dataBindingSource;
+        // Binding the selected table from the data set to the DataGridView component.
+        dataBindingSource.DataSource = tableDataSet.Tables [0];
 
-      } catch (System.Exception ex) {
+        tableDataGridView.DataSource = dataBindingSource;
+        } catch (System.Exception ex) {
         MessageBox.Show(ex.ToString(), "Could not display the table", MessageBoxButtons.OK); // immeadietly went to this
       } finally {
         if (databaseConnection.State == ConnectionState.Open) {
@@ -186,17 +169,98 @@ namespace Poliklinika_DB_UI {
         }
       }
     }
-    private void tableSelect_SelectedIndexChanged (object sender, EventArgs e) {
-      // selecting tables - user interaction
-    }
-    private void databaseDataGrid_CellContentClick (object sender, DataGridViewCellEventArgs e) {
-      // table 1
-    }
 
-    private void databaseNavigator_RefreshItems (object sender, EventArgs e) {
-      // table 1
-    }
+    private void tableSelector_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            displayTableData();
+        }
 
+   private void addRows_Click(object sender, EventArgs e) {
 
-  }
+      string selectedTable = tableSelector.SelectedItem?.ToString();
+
+      if (selectedTable == null) {
+        MessageBox.Show("Please select a table first.");
+        return;
+      }
+
+      SqlConnection databaseConnection = new SqlConnection(connectionString);
+
+    // Getting columns and data types for the user-selected table
+     string getTableColumnsCommand = $"SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = [{selectedTable}]";
+
+     SqlCommand getColumns = new SqlCommand(getTableColumnsCommand, databaseConnection);
+
+      // Initializing table reader here to have access to it in try/catch block
+      SqlDataReader tableReader = null;
+
+       try {
+          databaseConnection.Open();
+          tableReader = getColumns.ExecuteReader();
+
+          List<(string columnName, string dataType)> columns = new List<(string, string)>();
+
+          while (tableReader.Read()) {
+             // Gettting the first column from the result set - the column name
+             string columnName = tableReader.GetString(0);
+
+             // Getting the second column from the result set - the data type
+             string dataType = tableReader.GetString(1);
+
+             columns.Add((columnName, dataType));
+           }
+
+          // Looping through column names and data types
+          foreach (var (columnName, dataType) in columns) {
+
+            Label columnLabel = new Label();
+            columnLabel.Text = columnName;
+            columnLabel.AutoSize = true;
+
+           // Adding the label to the panel
+           addRecordsPanel.Controls.Add(columnLabel);
+
+           Control inputControl;
+
+           if (dataType == "int") {
+              inputControl = new NumericUpDown();
+            } else if (dataType == "varchar" || dataType == "nvarchar") {
+              inputControl = new System.Windows.Forms.TextBox();
+            } else if (dataType == "date") {
+              inputControl = new DateTimePicker();
+              ((DateTimePicker)inputControl).Format = DateTimePickerFormat.Short;
+             } else if (dataType == "time") {
+               inputControl = new DateTimePicker();
+               // Setting the format to time and showing the up/down arrow to select the time
+               ((DateTimePicker)inputControl).Format = DateTimePickerFormat.Time;
+               ((DateTimePicker)inputControl).ShowUpDown = true;
+             } else {
+               // Defaulting to textbox if nothing else applies
+               inputControl = new System.Windows.Forms.TextBox();
+             }
+
+             // Setting a name to identify the control later
+             inputControl.Name = "input_" + columnName;
+
+             // Adding the input control to the form panel
+             addRecordsPanel.Controls.Add(inputControl);
+
+           }
+
+       } catch (System.Exception ex) {
+           MessageBox.Show(ex.ToString(), "Could not read tables columns and types from the database", MessageBoxButtons.OK);
+        } finally {
+
+           // Closing the table reader, if it is open
+           if (tableReader != null && !tableReader.IsClosed) {
+            tableReader.Close();
+          }
+           if (databaseConnection.State == ConnectionState.Open) {
+                databaseConnection.Close();
+            }
+          }
+
+        }
+
+   }
 }
