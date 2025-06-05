@@ -32,7 +32,8 @@
             this.deleteRecords = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.addRecordsPanel = new System.Windows.Forms.Panel();
+            this.addRecordsPanel = new System.Windows.Forms.FlowLayoutPanel();
+            this.saveNewRecordsButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.tableDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -104,16 +105,29 @@
             // 
             // addRecordsPanel
             // 
-            this.addRecordsPanel.Location = new System.Drawing.Point(848, 59);
+            this.addRecordsPanel.Location = new System.Drawing.Point(808, 102);
             this.addRecordsPanel.Name = "addRecordsPanel";
-            this.addRecordsPanel.Size = new System.Drawing.Size(232, 347);
+            this.addRecordsPanel.Size = new System.Drawing.Size(305, 305);
             this.addRecordsPanel.TabIndex = 8;
+            // 
+            // saveNewRecordsButton
+            // 
+            this.saveNewRecordsButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.saveNewRecordsButton.Location = new System.Drawing.Point(1038, 425);
+            this.saveNewRecordsButton.Name = "saveNewRecordsButton";
+            this.saveNewRecordsButton.Size = new System.Drawing.Size(75, 23);
+            this.saveNewRecordsButton.TabIndex = 0;
+            this.saveNewRecordsButton.Text = "Save entry";
+            this.saveNewRecordsButton.UseVisualStyleBackColor = true;
+            this.saveNewRecordsButton.Visible = false;
+            this.saveNewRecordsButton.Click += new System.EventHandler(this.saveNewRecordsButton_Click);
             // 
             // DatabaseForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1125, 427);
+            this.ClientSize = new System.Drawing.Size(1125, 456);
+            this.Controls.Add(this.saveNewRecordsButton);
             this.Controls.Add(this.addRecordsPanel);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
@@ -141,7 +155,8 @@
         private System.Windows.Forms.Button deleteRecords;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Panel addRecordsPanel;
+        private System.Windows.Forms.FlowLayoutPanel addRecordsPanel;
+        private System.Windows.Forms.Button saveNewRecordsButton;
     }
 }
 
